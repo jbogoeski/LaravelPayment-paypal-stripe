@@ -44,7 +44,6 @@ class StripeService
        ]);
 
        $intent = $this->createIntent($request->value, $request->currency, $request->payment_method);
-
        session()->put('paymentIntentId', $intent->id);
 
        return redirect()->route('approval');
@@ -57,6 +56,14 @@ class StripeService
 
             $confirmation = $this->confirmPayment($paymentIntentId);
 
+            if ($confirmation->status === 'requires_action') {
+                $clientSecret = $confirmation->client_secret;
+
+                return view('stripe.3d-secure')->with([
+                    'clientSecret' => $clientSecret,
+                ]);
+            }
+            
             if ($confirmation->status === 'succeeded') {
                 $name = $confirmation->charges->data[0]->billing_details->name;
                 $currency = strtoupper($confirmation->currency);
