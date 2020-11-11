@@ -17,7 +17,7 @@ class CurrenciesTableSeeder extends Seeder
         $currencies = [
             'eur',
             'usd',
-            'mkd'
+            'jpy'
         ];
 
         foreach($currencies as $currency) {
